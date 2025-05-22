@@ -1,0 +1,10 @@
+.logo
+{
+    height: 250px;
+    cursor: pointer;
+}
+
+.subtitle{
+    font: optional;
+    color:blue;
+}
