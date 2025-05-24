@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from 'axios';
-import type { Product } from "../Models/Product";
 import ProductDetails from "./ProductDetails";
 // function HouseList()
 // {
