@@ -1,13 +1,17 @@
+import { Outlet } from 'react-router-dom';
 import './App.css'
-import FirstComponent from './Components/FirstComponent';
-import HouseList from './Components/HouseList';
+import NavBar from './components/NavBar';
+import { Container } from '@mui/material';
 
 function App() {
   return (
-    <div className='container'> 
-      <FirstComponent subtitle=' Hellor Mr Raghav Instagram King'/> 
-      <HouseList></HouseList>
-    </div>
+    <>
+     <NavBar></NavBar>
+      <Container maxWidth ='xl' sx={{mt:10}}>
+      <Outlet></Outlet>
+      </Container>
+    </>
+   
   
   );
 }

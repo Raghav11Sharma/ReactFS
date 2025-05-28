@@ -1,5 +1,5 @@
-import logo from './OIP.jpg';
 import './FirstComponent.css';
+import logo from '../assets/OIP.jpg';
 
 type args= {
     subtitle:string
