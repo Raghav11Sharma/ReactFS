@@ -1,110 +1,100 @@
-import { useState, useEffect } from "react";
-import './FirstComponent.css';
+import React, { useState } from "react";
+import '../components/Styling/Style.css';
+
 
 function LoginPage() {
-  const initialValues = { username: "", email: "", password: "" };
-  const [formValues, setFormValues] = useState(initialValues);
-  const [formErrors, setFormErrors] = useState({});
-  const [isSubmit, setIsSubmit] = useState(false);
+  // State to handle form inputs
+  const [userName, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleChange = (e:any) => {
-    const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value });
+  // State for UI feedback
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  // Handle email input change
+  const handleEmailChange = (e: any) => {
+    setEmail(e.target.value);
   };
 
-   const handleSubmit = async (e:any) => {
+  // Handle password input change
+  const handlePasswordChange = (e: any) => {
+    setPassword(e.target.value);
+  };
+
+  // Form submit handler
+  const handleSubmit = async (e: any) => {
     e.preventDefault(); // Prevent the default form submission behavior
-    setFormErrors(validate(formValues));
-    setIsSubmit(true);
+
+    // Basic validation
+    if (!userName || !password) {
+      setError("Both email and password are required.");
+      return;
+    }
+
+    setError(""); // Clear previous errors
+    setSuccessMessage(""); // Clear previous success messages
+    setLoading(true); // Show loading spinner
+
     try {
+      // API call
       const response = await fetch("https://localhost:44395/api/Account/Login", {
-        method: "POST", // Use POST or your required HTTP method
+        method: "POST",
         headers: {
-          "Content-Type": "application/json", // Specify that you're sending JSON
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData), // Convert form data to JSON string
+        body: JSON.stringify({ userName, password }), // Sending email and password in body
       });
 
       if (response.ok) {
-        const result = await response.json();
-        console.log("Form submitted successfully:", result);
-        // Optionally clear the form
-        setFormData({
-          name: "",
-          email: "",
-          message: "",
-        });
-      } else {
-        console.error("Failed to submit form", response.statusText);
-      }
-    } catch (error) {
-      console.error("Error submitting the form:", error);
-    }
-  };
-  
+        const data = await response.json(); // Parse JSON response
+        setSuccessMessage("Login successful!"); // Show success message
+        console.log("API Response Data:", data);
 
-  useEffect(() => {
-    console.log(formErrors);
-    if (Object.keys(formErrors).length === 0 && isSubmit) {
-      console.log(formValues);
+        // You can perform further actions, like redirecting the user
+      } else {
+        // Handle non-200 responses
+        const errorData = await response.json();
+        setError(errorData.message || "An error occurred during login.");
+      }
+    } catch (error: any) {
+      // Handle network or unexpected errors
+      setError("A network error occurred: " + error.message);
+    } finally {
+      setLoading(false); // Hide loading spinner
     }
-  }, [formErrors]);
-  const validate = (values: {email: any; password: any; }) => {
-    const errors = {};
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-   
-    if (!values.email) {
-      errors.email = "Email is required!";
-    } else if (!regex.test(values.email)) {
-      errors.email = "This is not a valid email format!";
-    }
-    if (!values.password) {
-      errors.password = "Password is required";
-    } else if (values.password.length < 4) {
-      errors.password = "Password must be more than 4 characters";
-    } else if (values.password.length > 10) {
-      errors.password = "Password cannot exceed more than 10 characters";
-    }
-    return errors;
   };
 
   return (
-    <div className="container">
-      {Object.keys(formErrors).length === 0 && isSubmit ? (
-        <div className="ui message success">Signed in successfully</div>
-      ) : (
-        <pre>{JSON.stringify(formValues, undefined, 2)}</pre>
-      )}
+    <div>
+      <h2>Login</h2>
 
+      {/* Display error or success messages */}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
+
+      {/* Login form */}
       <form onSubmit={handleSubmit}>
-        <h1>Login Form</h1>
-        <div className="ui divider"></div>
-        <div className="ui form">
-          <div className="field">
-            <label>Username</label>
-            <input
-              type="text"
-              name="username"
-              placeholder="Username"
-              value={formValues.username}
-              onChange={handleChange}
-            />
-          </div>
-          
-          <p>{formErrors.email}</p>
-          <div className="field">
-            <label>Password</label>
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={formValues.password}
-              onChange={handleChange}
-            />
-          </div>
-          <p>{formErrors.password}</p>
-          <button className="fluid ui button blue">Submit</button>
+        <div>
+          <label>userName:</label>
+          <input
+            value={userName}
+            onChange={handleEmailChange}
+
+          />
         </div>
+        <div>
+          <label>Password:</label>
+          <input
+            type="password"
+            value={password}
+            onChange={handlePasswordChange}
+            required
+          />
+        </div>
+        <button type="submit" disabled={loading}>
+          {loading ? "Logging in..." : "Log In"}
+        </button>
       </form>
     </div>
   );

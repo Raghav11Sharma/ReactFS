@@ -1,23 +1,27 @@
+import { useDispatch, useSelector } from "react-redux"
+import type { CounterState } from "./CounterReducer"
+import { ButtonGroup, Typography } from "@mui/material";
+
 export default function About()
 {
-    return(
-        <>
-        <table className="table table-hover">
-                 <thead>
-                     <tr>
-                        <th> Id</th>
-                       <th> Title</th>
-                        <th>Asking Price</th>
-                        <th>Description</th>
-                        <th>Category</th>
-                         <th>Image</th>
 
+const recievedfromRedux = useSelector ((state:CounterState) => state.data);
 
-                    </tr>
-                </thead>
-                 <tbody>
-                   </tbody>
-             </table>
-        </>
-    )
+const updatedstate = useDispatch();
+
+return (
+    <>
+    <Typography variant="h3">
+        About Page
+</Typography>
+<Typography variant="body2">
+    The data using Redux is since it is storing state is :: {recievedfromRedux}
+</Typography>
+<ButtonGroup>
+    <button onClick = {() => updatedstate({type : 'increment'})} color ="error"> Increment</button>
+    <button onClick = {() => updatedstate({type : 'decrement'})} color ="secondary"> Decrement</button>
+
+</ButtonGroup>
+    </>
+)
 }

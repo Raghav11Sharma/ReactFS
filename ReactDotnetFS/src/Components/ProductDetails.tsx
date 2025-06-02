@@ -1,5 +1,6 @@
+import { useState } from "react";
 import type { Product } from "../models/Product";
-import { Button, Card, CardActions, CardContent, CardMedia, Grid, Link, Typography } from "@mui/material"
+import { Alert, Button, Card, CardActions, CardContent, CardMedia, Grid, Link, Typography } from "@mui/material"
 
 type Props = {
     apiresponse: Product[]
@@ -7,6 +8,7 @@ type Props = {
 
 export default function ProductDetails({ apiresponse }: Props) {
 
+    const [addBasketItem, {isLoading}] = useState(1);
 
     return (
         // <div>
@@ -73,18 +75,17 @@ export default function ProductDetails({ apiresponse }: Props) {
                                 variant="h6"
                                 sx={{ color: 'secondary.main' }}
                             >
-                                {('$' + product.price)}
+                                {('Price ::   ' + `$` + product.price)}
                             </Typography>
                         </CardContent>
-                        <CardActions
-                            sx={{ justifyContent: 'space-between' }}
-                        >
-                            <Button
-                            // onClick={() => addBasketItem({product, quantity: 1})}
-                            >Add to cart
-                            </Button>
-
-                        </CardActions>
+                       <CardActions
+                sx={{ justifyContent: 'space-between' }}
+            >
+                <Button 
+                    disabled={isLoading}
+                >Add to cart</Button>
+                <Button component={Link} to={`/ProductList/${product.id}`}>View</Button>
+            </CardActions>
                     </Card>
                 </Grid>
 
